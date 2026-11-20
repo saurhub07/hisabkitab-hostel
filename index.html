@@ -3,877 +3,271 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HisabKitab — Ultra Hostel Splitter</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>HisabKitab - Hostel Expense Splitter</title>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
-    .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .gradient-btn { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .gradient-btn:hover { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
-    .tab-btn { transition: all 0.2s ease; }
-    .tab-active { background-color: #10b981; color: white; font-weight: 600; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
-    input, select { background-color: #334155 !important; border-color: #475569 !important; color: #f8fafc !important; }
-    input:focus, select:focus { border-color: #10b981 !important; outline: none; }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; borderRadius: 4px; }
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 28px;
+      color: #f8fafc;
+    }
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+      margin-bottom: 14px;
+      color: #f1f5f9;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+      margin-top: 10px;
+    }
+    input, select {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 14px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+    .row > div {
+      flex: 1;
+    }
+    button {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #10b981;
+      color: #06281e;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #34d399;
+    }
+    button.secondary {
+      background: #334155;
+      color: #f8fafc;
+    }
+    button.secondary:hover {
+      background: #475569;
+    }
+    button.danger {
+      background: #ef4444;
+      color: #fff;
+      padding: 5px 9px;
+      font-size: 12px;
+      margin-top: 0;
+    }
+    .member-list, .expense-list, .settlement-list, .standing-list {
+      margin-top: 12px;
+    }
+    .item-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .small {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .pos {
+      color: #34d399;
+      font-weight: bold;
+    }
+    .neg {
+      color: #f87171;
+      font-weight: bold;
+    }
+    .zero {
+      color: #94a3b8;
+    }
+    .participants-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .participants-box label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .participants-box input[type="checkbox"] {
+      width: auto;
+    }
+    .pay-link {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 6px 10px;
+      background: #059669;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .total-bar {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+    }
   </style>
 </head>
-<body class="min-h-screen pb-20">
+<body>
+  <div class="container">
+    <h1>HisabKitab</h1>
+    <div class="subtitle">Hostel Expense Splitter &amp; Debt Settlement</div>
 
-  <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-900/50 sticky top-0 z-30 backdrop-blur-md">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-900 font-extrabold flex items-center justify-center text-xl shadow-lg shadow-emerald-500/20">₹</div>
-        <div>
-          <h1 class="font-extrabold text-white text-lg tracking-tight leading-none">HisabKitab</h1>
-          <p class="text-xs text-slate-400 mt-1 font-medium">Hostel Expense &amp; UPI Settlement Engine</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="hidden sm:inline-block text-xs bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700 font-medium">BH-4 Room 302</span>
-        <button onclick="resetDemo()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl border border-slate-700 font-semibold transition active:scale-95">Reset Demo</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-    <!-- Left Column: Setup & Expenses -->
-    <div class="lg:col-span-7 space-y-8">
-
-      <!-- Roommates Card -->
-      <div class="glass-card p-6 rounded-3xl shadow-xl">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">1</div>
-            <h2 class="font-bold text-white text-base">Roommates &amp; UPI Profiles</h2>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>1. Roommates &amp; UPI</h2>
+          <div class="row">
+            <div>
+              <label for="memberName">Name</label>
+              <input id="memberName" type="text" placeholder="e.g. Aarav" />
+            </div>
+            <div>
+              <label for="memberUpi">UPI ID</label>
+              <input id="memberUpi" type="text" placeholder="e.g. aarav@okicici" />
+            </div>
           </div>
-          <span id="memberCount" class="text-xs bg-slate-800 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">4 Members</span>
+          <button onclick="handleAddMember()">+ Add Member</button>
+          <button class="secondary" onclick="loadSampleRoommates()">Load Default Roommates</button>
+
+          <div id="memberList" class="member-list"></div>
         </div>
 
-        <div id="membersList" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5"></div>
+        <div class="card">
+          <h2>2. Add Expense</h2>
+          <label for="expenseTitle">Title</label>
+          <input id="expenseTitle" type="text" placeholder="e.g. Zomato / Electricity Bill" />
 
-        <form onsubmit="addMember(event)" class="flex flex-col sm:flex-row gap-2.5 bg-slate-900/50 p-3 rounded-2xl border border-slate-800">
-          <div class="flex-1">
-            <input id="newMemberName" type="text" placeholder="Roommate Name (e.g. Aman)" required class="w-full text-sm rounded-xl px-3 py-2 border transition" />
+          <div class="row">
+            <div>
+              <label for="expenseAmount">Amount (₹)</label>
+              <input id="expenseAmount" type="number" min="1" step="0.01" placeholder="12000" />
+            </div>
+            <div>
+              <label for="paidBySelect">Paid By</label>
+              <select id="paidBySelect"></select>
+            </div>
           </div>
-          <div class="flex-1">
-            <input id="newMemberUpi" type="text" placeholder="UPI ID (e.g. aman@okaxis)" required class="w-full text-sm rounded-xl px-3 py-2 border transition font-mono" />
+
+          <label>Split Equally Among</label>
+          <div id="participantsBox" class="participants-box"></div>
+
+          <button onclick="handleAddExpense()">Save Expense &amp; Settle</button>
+          <button class="secondary" onclick="clearAllData()">Reset All</button>
+
+          <div class="total-bar">
+            <span>Total Expenses</span>
+            <span id="totalExpenseText">₹0</span>
           </div>
-          <button type="submit" class="gradient-btn hover:opacity-95 text-slate-950 font-bold text-sm px-5 py-2.5 rounded-xl shadow-lg transition active:scale-95">+ Add</button>
-        </form>
+          <div id="expenseList" class="expense-list"></div>
+        </div>
       </div>
 
-      <!-- Add Expense Card -->
-      <div class="glass-card p-6 rounded-3xl shadow-xl">
-        <div class="flex items-center gap-2.5 mb-6">
-          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">2</div>
-          <h2 class="font-bold text-white text-base">Log Group Expense</h2>
+      <div>
+        <div class="card">
+          <h2>3. Minimum Transactions</h2>
+          <div id="settlementList" class="settlement-list"></div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
-          <div class="sm:col-span-2">
-            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Expense Title</label>
-            <input id="expTitle" type="text" placeholder="e.g. Late Night Zomato / Electricity Bill" required class="w-full text-sm rounded-xl px-3.5 py-2.5 border font-medium" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Paid By</label>
-            <select id="paidBySelect" class="w-full text-sm rounded-xl px-3.5 py-2.5 border font-semibold cursor-pointer"></select>
-          </div>
+        <div class="card">
+          <h2>4. Net Balance</h2>
+          <div id="standingList" class="standing-list"></div>
         </div>
-
-        <!-- Split Tabs -->
-        <div class="mb-5">
-          <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Split Strategy</label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800">
-            <button type="button" onclick="setSplitMode('equal')" id="tab-equal" class="tab-btn tab-active py-2 rounded-xl text-xs">Equal Split</button>
-            <button type="button" onclick="setSplitMode('unequal')" id="tab-unequal" class="tab-btn py-2 rounded-xl text-xs text-slate-400 hover:text-white">Unequal (₹)</button>
-            <button type="button" onclick="setSplitMode('shares')" id="tab-shares" class="tab-btn py-2 rounded-xl text-xs text-slate-400 hover:text-white">By Shares</button>
-            <button type="button" onclick="setSplitMode('itemwise')" id="tab-itemwise" class="tab-btn py-2 rounded-xl text-xs text-slate-400 hover:text-white">Bill Photo / Items</button>
-          </div>
-        </div>
-
-        <!-- Amount Input -->
-        <div id="totalAmountWrapper" class="mb-6">
-          <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Total Bill Amount (₹)</label>
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-base">₹</span>
-            <input id="expAmount" type="number" min="1" step="0.01" oninput="updateSplitPreview()" placeholder="0.00" class="w-full text-lg font-extrabold rounded-xl pl-10 pr-4 py-3 border tracking-tight" />
-          </div>
-        </div>
-
-        <!-- Dynamic Split Panel -->
-        <div id="splitPanel" class="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 mb-5"></div>
-
-        <p id="splitError" class="text-xs text-rose-400 font-bold mb-4 hidden px-1 bg-rose-500/10 py-2 rounded-xl border border-rose-500/20 text-center"></p>
-
-        <button type="button" onclick="saveExpense()" class="w-full gradient-btn hover:opacity-95 text-slate-950 font-extrabold text-base py-3.5 rounded-2xl shadow-xl shadow-emerald-500/20 transition active:scale-95 flex items-center justify-center gap-2">
-          <span>Save Expense &amp; Optimize Debts</span>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-        </button>
-      </div>
-
-      <!-- History Card -->
-      <div class="glass-card p-6 rounded-3xl shadow-xl">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-bold text-white text-base flex items-center gap-2">
-            <span>Expense Ledger</span>
-            <span id="ledgerCountBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">0</span>
-          </h2>
-          <span id="totalSpentBadge" class="text-xs font-extrabold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Total: ₹0</span>
-        </div>
-        <div id="expenseList" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar pr-1"></div>
-      </div>
-
-    </div>
-
-    <!-- Right Column: Optimization & Settlements -->
-    <div class="lg:col-span-5 space-y-8">
-
-      <!-- Settlement Engine Card -->
-      <div class="glass-card p-6 rounded-3xl shadow-xl border-emerald-500/30">
-        <div class="flex items-start justify-between gap-4 mb-6">
-          <div>
-            <h2 class="font-extrabold text-white text-lg">Minimum-Transactions</h2>
-            <p class="text-xs text-slate-400 mt-1">Greedy debt simplification engine reducing total UPI transfers</p>
-          </div>
-          <div id="txReductionBadge" class="text-xs font-black bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-xl border border-emerald-500/30 whitespace-nowrap shadow-inner">0 Transfers</div>
-        </div>
-
-        <div id="settlementList" class="space-y-4"></div>
-      </div>
-
-      <!-- Net Balances Card -->
-      <div class="glass-card p-6 rounded-3xl shadow-xl">
-        <h3 class="font-bold text-white text-base mb-4 flex items-center justify-between">
-          <span>Net Member Standings</span>
-          <span class="text-[11px] font-normal text-slate-400">Green = Receives &bull; Red = Owes</span>
-        </h3>
-        <div id="netBalanceList" class="space-y-2.5"></div>
-      </div>
-
-    </div>
-  </main>
-
-  <!-- UPI Deep Link & QR Modal -->
-  <div id="upiModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50 animate-fadeIn">
-    <div class="bg-slate-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-800 relative">
-      <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center font-bold text-lg transition">&times;</button>
-      
-      <div class="text-center mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 font-black text-2xl mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/30 mb-3">₹</div>
-        <h3 class="font-extrabold text-white text-lg">Instant UPI Settlement</h3>
-        <p id="modalSubtitle" class="text-xs text-slate-400 mt-1 font-medium"></p>
-      </div>
-
-      <div class="bg-white p-4 rounded-2xl flex justify-center mb-5 shadow-inner border-2 border-emerald-500/20">
-        <div id="qrcode" class="p-1"></div>
-      </div>
-
-      <div class="bg-slate-950/80 p-3 rounded-2xl mb-6 border border-slate-800 font-mono text-[11px] text-slate-300 break-all select-all max-h-20 overflow-y-auto">
-        <span class="text-emerald-400 font-bold block mb-0.5">URI Intent Payload:</span>
-        <span id="modalDeepLinkText"></span>
-      </div>
-
-      <div class="flex gap-3">
-        <a id="modalPayBtn" href="#" class="flex-1 text-center gradient-btn hover:opacity-95 text-slate-950 font-extrabold text-xs py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-1.5">
-          <span>Pay via UPI App</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-        </a>
-        <button onclick="copyModalLink()" id="copyBtn" class="px-5 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition active:scale-95">Copy Link</button>
       </div>
     </div>
   </div>
 
-<script>
-  // Core Domain State
-  const DEFAULT_MEMBERS = [
-    { id: 'm1', name: 'Aarav', upi: 'aarav.hostel@okicici' },
-    { id: 'm2', name: 'Rohan', upi: 'rohan99@ybl' },
-    { id: 'm3', name: 'Kabir', upi: 'kabir.dev@okaxis' },
-    { id: 'm4', name: 'Dev', upi: 'devansh@paytm' }
-  ];
+  <script>
+    const STORAGE_MEMBERS = "hk_members_v1";
+    const STORAGE_BILLS = "hk_bills_v1";
 
-  const DEFAULT_EXPENSES = [
-    {
-      id: 'e1',
-      title: 'Zomato Midnight Biryani',
-      paidBy: 'm1',
-      amount: 840,
-      mode: 'equal',
-      splits: { m1: 210, m2: 210, m3: 210, m4: 210 }
-    },
-    {
-      id: 'e2',
-      title: 'Room Cooler & Electricity',
-      paidBy: 'm2',
-      amount: 1200,
-      mode: 'shares',
-      splits: { m1: 400, m2: 400, m3: 200, m4: 200 }
-    }
-  ];
+    let members = JSON.parse(localStorage.getItem(STORAGE_MEMBERS) || "null");
+    let bills = JSON.parse(localStorage.getItem(STORAGE_BILLS) || "null");
 
-  let members = [];
-  let expenses = [];
-  let currentMode = 'equal';
-  let billItems = [
-    { id: 1, name: 'Paneer Tikka Roll', price: 180, sharedBy: ['m1', 'm2'] },
-    { id: 2, name: 'Chicken Dum Biryani', price: 320, sharedBy: ['m3', 'm4'] },
-    { id: 3, name: 'Cold Coffee (x2)', price: 160, sharedBy: ['m1', 'm4'] }
-  ];
-  let billTax = 40;
-
-  // Initialize & Hydrate Storage
-  function initApp() {
-    const savedM = localStorage.getItem('hk_members');
-    const savedE = localStorage.getItem('hk_expenses');
-    
-    if (!savedM || !savedE) {
-      resetDemo();
-    } else {
-      try {
-        members = JSON.parse(savedM);
-        expenses = JSON.parse(savedE);
-      } catch (e) {
-        resetDemo();
-      }
-    }
-    renderAll();
-  }
-
-  function saveState() {
-    localStorage.setItem('hk_members', JSON.stringify(members));
-    localStorage.setItem('hk_expenses', JSON.stringify(expenses));
-  }
-
-  function resetDemo() {
-    members = JSON.parse(JSON.stringify(DEFAULT_MEMBERS));
-    expenses = JSON.parse(JSON.stringify(DEFAULT_EXPENSES));
-    saveState();
-    renderAll();
-  }
-
-  // Member management
-  function addMember(e) {
-    e.preventDefault();
-    const nameEl = document.getElementById('newMemberName');
-    const upiEl = document.getElementById('newMemberUpi');
-    const name = nameEl.value.trim();
-    const upi = upiEl.value.trim();
-    if (!name || !upi) return;
-
-    members.push({ id: 'm' + Date.now(), name, upi });
-    nameEl.value = '';
-    upiEl.value = '';
-    saveState();
-    renderAll();
-  }
-
-  function removeMember(id) {
-    if (members.length <= 2) {
-      alert('Minimum 2 roommates required in group.');
-      return;
-    }
-    const involved = expenses.some(ex => ex.paidBy === id || (ex.splits[id] && ex.splits[id] > 0));
-    if (involved) {
-      alert('Cannot remove roommate involved in recorded expenses.');
-      return;
-    }
-    members = members.filter(m => m.id !== id);
-    saveState();
-    renderAll();
-  }
-
-  // Split Engine Routing
-  function setSplitMode(mode) {
-    currentMode = mode;
-    ['equal', 'unequal', 'shares', 'itemwise'].forEach(m => {
-      const btn = document.getElementById('tab-' + m);
-      if (m === mode) {
-        btn.classList.add('tab-active');
-        btn.classList.remove('text-slate-400', 'hover:text-white');
-      } else {
-        btn.classList.remove('tab-active');
-        btn.classList.add('text-slate-400', 'hover:text-white');
-      }
-    });
-
-    const totalWrapper = document.getElementById('totalAmountWrapper');
-    if (mode === 'itemwise') {
-      totalWrapper.classList.add('hidden');
-    } else {
-      totalWrapper.classList.remove('hidden');
+    if (!Array.isArray(members)) {
+      members = [
+        { id: "m1", name: "Aarav", upi: "aarav.hostel@okicici" },
+        { id: "m2", name: "Rohan", upi: "rohan99@ybl" },
+        { id: "m3", name: "Kabir", upi: "kabir.dev@okaxis" },
+        { id: "m4", name: "Dev", upi: "devansh@paytm" }
+      ];
     }
 
-    document.getElementById('splitError').classList.add('hidden');
-    renderSplitPanel();
-  }
-
-  function renderSplitPanel() {
-    const panel = document.getElementById('splitPanel');
-    if (!panel) return;
-
-    if (currentMode === 'equal') {
-      panel.innerHTML = `
-        <p class="text-xs font-semibold text-slate-300 mb-3">Select active participants for equal split:</p>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          ${members.map(m => `
-            <label class="flex items-center justify-between bg-slate-950/60 border border-slate-800 p-3 rounded-xl cursor-pointer hover:border-slate-700 transition">
-              <span class="text-xs font-bold text-slate-200 flex items-center gap-2">
-                <input type="checkbox" class="eq-check w-4 h-4 accent-emerald-500 rounded" value="${m.id}" checked onchange="updateSplitPreview()">
-                ${m.name}
-              </span>
-              <span id="eq-prev-${m.id}" class="text-xs font-mono text-emerald-400 font-bold">₹0</span>
-            </label>
-          `).join('')}
-        </div>
-      `;
-      updateSplitPreview();
-    } else if (currentMode === 'unequal') {
-      panel.innerHTML = `
-        <div class="flex justify-between items-center mb-3">
-          <p class="text-xs font-semibold text-slate-300">Allocate exact rupee shares per person:</p>
-          <span id="unequalStatus" class="text-xs font-bold text-emerald-400">Balanced ✓</span>
-        </div>
-        <div class="space-y-2.5 max-h-60 overflow-y-auto custom-scrollbar pr-1">
-          ${members.map(m => `
-            <div class="flex items-center justify-between bg-slate-950/60 border border-slate-800 px-4 py-2.5 rounded-xl">
-              <span class="text-xs font-bold text-slate-200">${m.name}</span>
-              <div class="relative w-32">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">₹</span>
-                <input type="number" min="0" step="0.01" data-mid="${m.id}" oninput="updateSplitPreview()" placeholder="0" class="uneq-input w-full text-right font-mono text-xs font-bold rounded-lg pl-7 pr-3 py-1.5 border">
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
-      updateSplitPreview();
-    } else if (currentMode === 'shares') {
-      panel.innerHTML = `
-        <p class="text-xs font-semibold text-slate-300 mb-3">Weight-based ratio allocation (e.g., 2x AC usage):</p>
-        <div class="space-y-2.5">
-          ${members.map(m => `
-            <div class="flex items-center justify-between bg-slate-950/60 border border-slate-800 px-4 py-2.5 rounded-xl">
-              <div>
-                <span class="text-xs font-bold text-slate-200">${m.name}</span>
-                <span id="sh-prev-${m.id}" class="text-[11px] font-mono text-emerald-400 font-bold ml-2">(₹0)</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <input type="number" min="0" step="1" value="1" data-mid="${m.id}" oninput="updateSplitPreview()" class="share-input w-16 text-center font-mono text-xs font-bold rounded-lg border py-1">
-                <span class="text-xs text-slate-500 font-bold">x</span>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
-      updateSplitPreview();
-    } else if (currentMode === 'itemwise') {
-      panel.innerHTML = `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-800">
-          <div>
-            <p class="text-xs font-extrabold text-white">Itemized Line-Item Split</p>
-            <p class="text-[11px] text-slate-400">Tag consumers per receipt item; tax auto-distributed</p>
-          </div>
-          <label class="cursor-pointer gradient-btn hover:opacity-95 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl text-center shadow-md active:scale-95 transition">
-            <span>Upload Bill / Receipt Photo</span>
-            <input type="file" accept="image/*" onchange="handleBillUpload(event)" class="hidden">
-          </label>
-        </div>
-
-        <div id="billPreviewBox" class="hidden mb-4 bg-slate-950 p-3 rounded-2xl border border-slate-800">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-[11px] font-bold text-emerald-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Receipt Attached
-            </span>
-            <button type="button" onclick="clearBillPhoto()" class="text-[11px] text-rose-400 hover:underline font-bold">Remove Image</button>
-          </div>
-          <img id="billPreviewImg" class="max-h-48 rounded-xl object-contain mx-auto border border-slate-800" />
-        </div>
-
-        <div id="itemsContainer" class="space-y-3 mb-4 max-h-60 overflow-y-auto custom-scrollbar pr-1"></div>
-
-        <div class="flex flex-wrap gap-2.5 mb-4 bg-slate-950/40 p-3 rounded-2xl border border-slate-800">
-          <input id="newItemName" type="text" placeholder="Item Name (e.g. Garlic Naan)" class="flex-1 text-xs rounded-xl px-3 py-2 border font-medium">
-          <input id="newItemPrice" type="number" min="1" placeholder="Price (₹)" class="w-26 text-xs rounded-xl px-3 py-2 border font-mono font-bold">
-          <button type="button" onclick="addBillItem()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-4 py-2 rounded-xl border border-slate-700 transition">+ Add Item</button>
-        </div>
-
-        <div class="flex items-center justify-between bg-slate-950/80 px-4 py-3 rounded-2xl border border-slate-800 text-xs">
-          <span class="font-semibold text-slate-300">GST / Delivery / Service Charge (Split proportionally):</span>
-          <div class="flex items-center gap-1 font-mono font-bold w-24">
-            <span class="text-slate-400">₹</span>
-            <input type="number" min="0" value="${billTax}" onchange="updateTax(this.value)" class="w-full text-right rounded-lg px-2 py-1 border text-emerald-400 text-xs font-bold">
-          </div>
-        </div>
-        <div class="mt-3 text-right text-sm font-black text-emerald-400 font-mono tracking-tight" id="itemWiseGrandTotal">Grand Total: ₹0</div>
-      `;
-      renderBillItems();
-    }
-  }
-
-  function updateTax(val) {
-    billTax = parseFloat(val) || 0;
-    renderBillItems();
-  }
-
-  function handleBillUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      document.getElementById('billPreviewImg').src = ev.target.result;
-      document.getElementById('billPreviewBox').classList.remove('hidden');
-      if (!document.getElementById('expTitle').value) {
-        document.getElementById('expTitle').value = 'Bill: ' + file.name.replace(/\.[^/.]+$/, "");
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function clearBillPhoto() {
-    document.getElementById('billPreviewBox').classList.add('hidden');
-    document.getElementById('billPreviewImg').src = '';
-  }
-
-  function renderBillItems() {
-    const box = document.getElementById('itemsContainer');
-    if (!box) return;
-    let subTotal = 0;
-
-    box.innerHTML = billItems.map((item, idx) => {
-      subTotal += item.price;
-      return `
-        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-xs font-bold text-slate-100">${item.name} <span class="text-emerald-400 font-mono font-black ml-1">₹${item.price}</span></span>
-            <button type="button" onclick="removeBillItem(${idx})" class="text-xs text-slate-500 hover:text-rose-400 font-bold px-1.5 py-0.5 rounded">&times;</button>
-          </div>
-          <div class="flex flex-wrap gap-1.5">
-            ${members.map(m => {
-              const active = item.sharedBy.includes(m.id);
-              return `
-                <button type="button" onclick="toggleItemMember(${idx}, '${m.id}')"
-                  class="text-[11px] font-bold px-2.5 py-1 rounded-lg border transition ${active ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/10' : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'}">
-                  ${m.name}
-                </button>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    const grand = subTotal + billTax;
-    const gtEl = document.getElementById('itemWiseGrandTotal');
-    if (gtEl) gtEl.textContent = `Grand Total (Items ₹${subTotal} + Tax ₹${billTax}): ₹${grand.toFixed(2)}`;
-  }
-
-  function addBillItem() {
-    const nameEl = document.getElementById('newItemName');
-    const priceEl = document.getElementById('newItemPrice');
-    const name = nameEl.value.trim();
-    const price = parseFloat(priceEl.value);
-    if (!name || isNaN(price) || price <= 0) return;
-
-    billItems.push({
-      id: Date.now(),
-      name,
-      price,
-      sharedBy: members.map(m => m.id)
-    });
-    nameEl.value = '';
-    priceEl.value = '';
-    renderBillItems();
-  }
-
-  function removeBillItem(idx) {
-    billItems.splice(idx, 1);
-    renderBillItems();
-  }
-
-  function toggleItemMember(idx, mid) {
-    const list = billItems[idx].sharedBy;
-    const pos = list.indexOf(mid);
-    if (pos > -1) {
-      if (list.length > 1) list.splice(pos, 1);
-    } else {
-      list.push(mid);
-    }
-    renderBillItems();
-  }
-
-  // Real-time Preview Calculation
-  function updateSplitPreview() {
-    const totalInput = document.getElementById('expAmount');
-    if (!totalInput && currentMode !== 'itemwise') return;
-    const total = parseFloat(totalInput?.value) || 0;
-
-    if (currentMode === 'equal') {
-      const checks = Array.from(document.querySelectorAll('.eq-check:checked')).map(c => c.value);
-      const each = checks.length ? (total / checks.length) : 0;
-      members.forEach(m => {
-        const el = document.getElementById('eq-prev-' + m.id);
-        if (el) el.textContent = checks.includes(m.id) ? `₹${each.toFixed(2)}` : '₹0';
-      });
-    } else if (currentMode === 'unequal') {
-      let sum = 0;
-      document.querySelectorAll('.uneq-input').forEach(inp => { sum += parseFloat(inp.value) || 0; });
-      const rem = total - sum;
-      const st = document.getElementById('unequalStatus');
-      if (st) {
-        if (Math.abs(rem) < 0.01) {
-          st.textContent = 'Matched ✓';
-          st.className = 'text-xs font-bold text-emerald-400';
-        } else if (rem > 0) {
-          st.textContent = `Remaining: ₹${rem.toFixed(2)}`;
-          st.className = 'text-xs font-bold text-amber-400';
-        } else {
-          st.textContent = `Exceeds by ₹${Math.abs(rem).toFixed(2)}`;
-          st.className = 'text-xs font-bold text-rose-400';
-        }
-      }
-    } else if (currentMode === 'shares') {
-      let totalShares = 0;
-      const inputs = Array.from(document.querySelectorAll('.share-input'));
-      inputs.forEach(inp => { totalShares += parseFloat(inp.value) || 0; });
-      inputs.forEach(inp => {
-        const mid = inp.dataset.mid;
-        const sh = parseFloat(inp.value) || 0;
-        const amt = totalShares > 0 ? (total * sh / totalShares) : 0;
-        const el = document.getElementById('sh-prev-' + mid);
-        if (el) el.textContent = `(₹${amt.toFixed(2)})`;
-      });
-    }
-  }
-
-  // Persistence & Validation
-  function showError(msg) {
-    const errEl = document.getElementById('splitError');
-    if (!errEl) return;
-    errEl.textContent = msg;
-    errEl.classList.remove('hidden');
-  }
-
-  function saveExpense() {
-    const errEl = document.getElementById('splitError');
-    errEl.classList.add('hidden');
-
-    const titleEl = document.getElementById('expTitle');
-    const title = titleEl.value.trim() || 'Hostel Group Expense';
-    const paidBy = document.getElementById('paidBySelect').value;
-    if (!paidBy) return showError('Please select who paid for this expense.');
-
-    let amount = parseFloat(document.getElementById('expAmount')?.value) || 0;
-    let splits = {};
-    members.forEach(m => splits[m.id] = 0);
-
-    if (currentMode === 'equal') {
-      if (amount <= 0) return showError('Enter a valid total amount greater than ₹0.');
-      const selected = Array.from(document.querySelectorAll('.eq-check:checked')).map(c => c.value);
-      if (selected.length === 0) return showError('Select at least one participant.');
-      const share = +(amount / selected.length).toFixed(2);
-      selected.forEach(id => splits[id] = share);
-    } else if (currentMode === 'unequal') {
-      if (amount <= 0) return showError('Enter a valid total amount.');
-      let sum = 0;
-      document.querySelectorAll('.uneq-input').forEach(inp => {
-        const val = parseFloat(inp.value) || 0;
-        splits[inp.dataset.mid] = val;
-        sum += val;
-      });
-      if (Math.abs(sum - amount) > 0.05) {
-        return showError(`Allocation sum (₹${sum.toFixed(2)}) must match Total Bill (₹${amount.toFixed(2)}).`);
-      }
-    } else if (currentMode === 'shares') {
-      if (amount <= 0) return showError('Enter a valid total amount.');
-      let totalShares = 0;
-      const inputs = Array.from(document.querySelectorAll('.share-input'));
-      inputs.forEach(inp => totalShares += parseFloat(inp.value) || 0);
-      if (totalShares <= 0) return showError('Total shares ratio must be greater than 0.');
-      inputs.forEach(inp => {
-        const sh = parseFloat(inp.value) || 0;
-        splits[inp.dataset.mid] = +((amount * sh) / totalShares).toFixed(2);
-      });
-    } else if (currentMode === 'itemwise') {
-      if (billItems.length === 0) return showError('Add at least one receipt item.');
-      let itemSubTotal = 0;
-      billItems.forEach(item => {
-        itemSubTotal += item.price;
-        const perPerson = item.price / item.sharedBy.length;
-        item.sharedBy.forEach(mid => {
-          splits[mid] = (splits[mid] || 0) + perPerson;
-        });
-      });
-      if (itemSubTotal <= 0) return showError('Item prices must be greater than ₹0.');
-      // Distribute tax proportionally
-      members.forEach(m => {
-        const ratio = splits[m.id] / itemSubTotal;
-        splits[m.id] = +(splits[m.id] + (itemSubTotal > 0 ? billTax * ratio : 0)).toFixed(2);
-      });
-      amount = +(itemSubTotal + billTax).toFixed(2);
+    if (!Array.isArray(bills)) {
+      bills = [];
     }
 
-    expenses.unshift({
-      id: 'e' + Date.now(),
-      title,
-      paidBy,
-      amount,
-      mode: currentMode,
-      splits
-    });
-
-    titleEl.value = '';
-    const amtInp = document.getElementById('expAmount');
-    if (amtInp) amtInp.value = '';
-    billItems = [
-      { id: Date.now()+1, name: 'Sample Item 1', price: 200, sharedBy: members.slice(0,2).map(m=>m.id) },
-      { id: Date.now()+2, name: 'Sample Item 2', price: 300, sharedBy: members.map(m=>m.id) }
-    ];
-    saveState();
-    renderAll();
-  }
-
-  function deleteExpense(id) {
-    expenses = expenses.filter(e => e.id !== id);
-    saveState();
-    renderAll();
-  }
-
-  function markSettled(fromId, toId, amount) {
-    const fromM = members.find(m => m.id === fromId);
-    const toM = members.find(m => m.id === toId);
-    const splits = {};
-    members.forEach(m => splits[m.id] = 0);
-    splits[toId] = amount;
-
-    expenses.unshift({
-      id: 'settle' + Date.now(),
-      title: `UPI Settlement: ${fromM.name} → ${toM.name}`,
-      paidBy: fromId,
-      amount: amount,
-      mode: 'settlement',
-      splits
-    });
-    saveState();
-    renderAll();
-  }
-
-  // Greedy Minimum-Transactions Debt Simplification Algorithm
-  function computeSettlements() {
-    const net = {};
-    members.forEach(m => net[m.id] = 0);
-
-    let rawTransactions = 0;
-    expenses.forEach(exp => {
-      net[exp.paidBy] = (net[exp.paidBy] || 0) + exp.amount;
-      Object.entries(exp.splits).forEach(([mid, owe]) => {
-        if (owe > 0) {
-          net[mid] = (net[mid] || 0) - owe;
-          if (mid !== exp.paidBy) rawTransactions++;
-        }
-      });
-    });
-
-    const debtors = [];
-    const creditors = [];
-
-    Object.entries(net).forEach(([id, bal]) => {
-      const rounded = Math.round(bal * 100) / 100;
-      if (rounded < -0.05) debtors.push({ id, amount: -rounded });
-      else if (rounded > 0.05) creditors.push({ id, amount: rounded });
-    });
-
-    const settlements = [];
-
-    while (debtors.length > 0 && creditors.length > 0) {
-      debtors.sort((a, b) => b.amount - a.amount);
-      creditors.sort((a, b) => b.amount - a.amount);
-
-      const d = debtors[0];
-      const c = creditors[0];
-      const settleAmt = Math.min(d.amount, c.amount);
-
-      settlements.push({
-        from: d.id,
-        to: c.id,
-        amount: Math.round(settleAmt * 100) / 100
-      });
-
-      d.amount -= settleAmt;
-      c.amount -= settleAmt;
-
-      if (d.amount < 0.05) debtors.shift();
-      if (c.amount < 0.05) creditors.shift();
+    function saveData() {
+      localStorage.setItem(STORAGE_MEMBERS, JSON.stringify(members));
+      localStorage.setItem(STORAGE_BILLS, JSON.stringify(bills));
     }
 
-    return { net, settlements, rawTransactions };
-  }
-
-  function buildUpiLink(receiver, amount, payerName) {
-    const params = new URLSearchParams({
-      pa: receiver.upi,
-      pn: receiver.name,
-      am: amount.toFixed(2),
-      cu: 'INR',
-      tn: `Hostel Settlement from ${payerName}`
-    });
-    return `upi://pay?${params.toString()}`;
-  }
-
-  function openUpiModal(fromName, toName, toUpi, amount, upiUrl) {
-    document.getElementById('modalSubtitle').textContent = `${fromName} pays ₹${amount} to ${toName} (${toUpi})`;
-    document.getElementById('modalDeepLinkText').textContent = upiUrl;
-    document.getElementById('modalPayBtn').href = upiUrl;
-
-    const qrBox = document.getElementById('qrcode');
-    qrBox.innerHTML = '';
-    new QRCode(qrBox, { text: upiUrl, width: 180, height: 180, colorDark: "#0f172a", colorLight: "#ffffff" });
-
-    const modal = document.getElementById('upiModal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-  }
-
-  function closeModal() {
-    const modal = document.getElementById('upiModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-  }
-
-  function copyModalLink() {
-    const text = document.getElementById('modalDeepLinkText').textContent;
-    navigator.clipboard.writeText(text);
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = 'Copied URI!';
-    setTimeout(() => btn.textContent = 'Copy Link', 2000);
-  }
-
-  // Master Renderer
-  function renderAll() {
-    // 1. Render Members
-    document.getElementById('memberCount').textContent = `${members.length} Members`;
-    document.getElementById('membersList').innerHTML = members.map(m => `
-      <div class="flex items-center justify-between bg-slate-950/60 border border-slate-800 px-3 py-2 rounded-xl">
-        <div class="truncate mr-2">
-          <p class="text-xs font-bold text-white truncate">${m.name}</p>
-          <p class="text-[10px] font-mono text-slate-400 truncate">${m.upi}</p>
-        </div>
-        <button onclick="removeMember('${m.id}')" class="w-6 h-6 flex items-center justify-center rounded-lg bg-slate-900 hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 transition text-xs font-bold">&times;</button>
-      </div>
-    `).join('');
-
-    // 2. Render Paid By Dropdown
-    const paidSel = document.getElementById('paidBySelect');
-    const prevVal = paidSel.value;
-    paidSel.innerHTML = members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
-    if (members.some(m => m.id === prevVal)) paidSel.value = prevVal;
-
-    // 3. Render Split Panel
-    renderSplitPanel();
-
-    // 4. Render Ledger
-    const activeExpenses = expenses.filter(e => e.mode !== 'settlement');
-    const totalSpent = activeExpenses.reduce((acc, e) => acc + e.amount, 0);
-    document.getElementById('ledgerCountBadge').textContent = expenses.length;
-    document.getElementById('totalSpentBadge').textContent = `Total: ₹${Math.round(totalSpent)}`;
-
-    const expListEl = document.getElementById('expenseList');
-    if (expenses.length === 0) {
-      expListEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-6 font-medium">No expenses logged yet.</p>`;
-    } else {
-      expListEl.innerHTML = expenses.map(exp => {
-        const payer = members.find(m => m.id === exp.paidBy)?.name || 'Unknown';
-        const isSettle = exp.mode === 'settlement';
-        return `
-          <div class="flex items-center justify-between border border-slate-800 rounded-2xl p-3.5 bg-slate-950/40 hover:bg-slate-950/70 transition">
-            <div class="truncate mr-3">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-extrabold text-slate-200 truncate">${exp.title}</span>
-                <span class="text-[9px] uppercase font-black px-2 py-0.5 rounded-full ${isSettle ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-slate-800 text-slate-400'}">${exp.mode}</span>
-              </div>
-              <p class="text-[11px] text-slate-400 mt-0.5">${isSettle ? '' : 'Paid by '} <span class="font-bold text-slate-300">${payer}</span></p>
-            </div>
-            <div class="flex items-center gap-3 shrink-0">
-              <span class="font-bold text-sm font-mono ${isSettle ? 'text-blue-400' : 'text-slate-100'}">₹${exp.amount}</span>
-              <button onclick="deleteExpense('${exp.id}')" class="text-xs text-slate-600 hover:text-rose-400 font-bold px-2 py-1 rounded">Delete</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // 5. Compute & Render Settlements
-    const { net, settlements, rawTransactions } = computeSettlements();
-    const badge = document.getElementById('txReductionBadge');
-    badge.textContent = rawTransactions > settlements.length
-      ? `${rawTransactions} debts ➔ ${settlements.length} UPI Transfers`
-      : `${settlements.length} UPI Transfers`;
-
-    const settleEl = document.getElementById('settlementList');
-    if (settlements.length === 0) {
-      settleEl.innerHTML = `
-        <div class="text-center py-8 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-          <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 text-xl font-bold">&check;</div>
-          <p class="text-sm font-extrabold text-emerald-400">All Settled Up!</p>
-          <p class="text-xs text-slate-400 mt-0.5">Zero outstanding balances in the hostel.</p>
-        </div>
-      `;
-    } else {
-      settleEl.innerHTML = settlements.map(s => {
-        const fromM = members.find(m => m.id === s.from);
-        const toM = members.find(m => m.id === s.to);
-        const upiUrl = buildUpiLink(toM, s.amount, fromM.name);
-
-        return `
-          <div class="border border-slate-800 rounded-2xl p-4 bg-gradient-to-br from-slate-950/80 to-slate-900/40 shadow-lg">
-            <div class="flex items-center justify-between mb-2.5">
-              <div class="text-sm font-bold truncate mr-2">
-                <span class="text-white">${fromM.name}</span>
-                <span class="text-emerald-500 mx-1.5 font-bold">&rarr;</span>
-                <span class="text-emerald-400">${toM.name}</span>
-              </div>
-              <span class="text-lg font-black font-mono text-white shrink-0">₹${s.amount}</span>
-            </div>
-            <p class="text-[11px] font-mono text-slate-400 mb-4 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800/80 truncate">UPI: <span class="text-slate-300">${toM.upi}</span></p>
-            <div class="flex gap-2">
-              <a href="${upiUrl}" class="flex-1 text-center gradient-btn hover:opacity-95 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1">
-                <span>Pay via UPI</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-              </a>
-              <button onclick="openUpiModal('${fromM.name}', '${toM.name}', '${toM.upi}', ${s.amount}, '${upiUrl}')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition">
-                QR / Link
-              </button>
-              <button onclick="markSettled('${s.from}', '${s.to}', ${s.amount})" class="px-3 py-2.5 bg-slate-900 hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400 border border-slate-800 transition rounded-xl text-xs font-bold flex items-center justify-center" title="Mark as Directly Paid">
-                &check;
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // 6. Render Net Balances
-    document.getElementById('netBalanceList').innerHTML = members.map(m => {
-      const val = Math.round((net[m.id] || 0) * 100) / 100;
-      const isZero = Math.abs(val) <= 0.05;
-      const pays = val < 0;
-      return `
-        <div class="flex items-center justify-between text-xs px-3.5 py-2 rounded-xl bg-slate-950/40 border border-slate-800/60">
-          <span class="font-bold text-slate-300 truncate mr-2">${m.name}</span>
-          <span class="font-mono font-black shrink-0 ${isZero ? 'text-slate-500' : (pays ? 'text-rose-400' : 'text-emerald-400')}">
-            ${isZero ? '₹0.00 (Settled)' : (pays ? `-₹${Math.abs(val).toFixed(2)} owes` : `+₹${val.toFixed(2)} gets back`)}
-          </span>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // Startup lifecycle
-  window.addEventListener('DOMContentLoaded', initApp);
-</script>
-</body>
-</html>
+    function loadSampleRoommates() {
+      members = [
+        { id: "m1", name: "Aarav", upi: "aarav.
