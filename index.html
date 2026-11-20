@@ -3,68 +3,352 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HisabKitab - Hostel Expense Splitter</title>
+  <title>HisabKitab - Hostel Expense & Fun Splitter</title>
   <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { margin: 0; background: #0f172a; color: #e2e8f0; padding: 20px; }
-    .wrap { max-width: 1100px; margin: 0 auto; }
-    h1 { margin: 0 0 4px 0; font-size: 26px; }
-    .sub { color: #94a3b8; font-size: 13px; margin-bottom: 18px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
-    .box { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-    h2 { margin: 0 0 12px 0; font-size: 17px; }
-    label { display: block; font-size: 13px; color: #cbd5e1; margin: 10px 0 4px 0; }
-    input, select { width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #f8fafc; font-size: 14px; }
-    .row { display: flex; gap: 10px; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 60%, #090d16 100%);
+      color: #f1f5f9;
+      padding: 18px;
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #334155;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      background: linear-gradient(90deg, #34d399, #38bdf8, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand p {
+      margin: 3px 0 0 0;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+    }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    .card h2 {
+      margin: 0 0 12px 0;
+      font-size: 17px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pill {
+      font-size: 11px;
+      background: #0f172a;
+      border: 1px solid #475569;
+      padding: 3px 8px;
+      border-radius: 99px;
+      color: #38bdf8;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #cbd5e1;
+      margin: 9px 0 4px 0;
+    }
+    input, select {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 14px;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #38bdf8;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+    }
     .row > div { flex: 1; }
-    button { margin-top: 12px; padding: 9px 14px; border: none; border-radius: 6px; background: #10b981; color: #052e16; font-weight: bold; cursor: pointer; }
-    button.sec { background: #334155; color: #f8fafc; }
-    button.del { background: #dc2626; color: #fff; padding: 5px 9px; font-size: 12px; margin-top: 0; }
-    .list-item { background: #0f172a; border: 1px solid #334155; border-radius: 7px; padding: 10px 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    button {
+      margin-top: 10px;
+      padding: 9px 14px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+    button:hover { opacity: 0.92; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button.sec {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    button.fun {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    }
+    button.demo {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      margin-top: 0;
+    }
+    button.danger {
+      background: #ef4444;
+      padding: 5px 9px;
+      font-size: 12px;
+      margin-top: 0;
+    }
+    .item {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 9px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
     .muted { font-size: 12px; color: #94a3b8; }
     .plus { color: #34d399; font-weight: bold; }
     .minus { color: #f87171; font-weight: bold; }
-    .checks { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 12px; }
-    .checks label { display: inline-flex; align-items: center; gap: 5px; margin: 0; cursor: pointer; }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin-left: 6px;
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #fbbf24;
+    }
+    .checks {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .checks label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0;
+      cursor: pointer;
+      font-size: 13px;
+    }
     .checks input { width: auto; }
-    .upi-btn { display: inline-block; margin-top: 6px; padding: 5px 10px; background: #059669; color: #fff; text-decoration: none; border-radius: 5px; font-size: 12px; }
-    .tot { margin-top: 12px; padding-top: 10px; border-top: 1px solid #334155; display: flex; justify-content: space-between; font-weight: bold; }
+    .custom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .custom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      padding: 6px 10px;
+      border-radius: 7px;
+      border: 1px solid #334155;
+      font-size: 13px;
+    }
+    .custom-row input {
+      width: 90px;
+      padding: 5px 7px;
+      text-align: right;
+    }
+    .action-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 7px;
+    }
+    .mini-btn {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      margin-top: 0;
+    }
+    .upi-go { background: #059669; color: #fff; }
+    .wa-go { background: #16a34a; color: #fff; }
+    .qr-go { background: #3b82f6; color: #fff; }
+
+    /* Category Chart */
+    .bar-wrap { margin-top: 8px; }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+    .bar-track {
+      width: 100%;
+      height: 8px;
+      background: #0f172a;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #34d399);
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+
+    /* Fun Wheel */
+    .wheel-box {
+      text-align: center;
+      padding: 10px;
+      background: #0f172a;
+      border-radius: 10px;
+      border: 1px dashed #475569;
+    }
+    .wheel-result {
+      font-size: 18px;
+      font-weight: bold;
+      color: #fbbf24;
+      margin: 10px 0;
+      min-height: 26px;
+    }
+
+    /* QR Modal */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .modal-card {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+    }
+    .modal-card img {
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 12px 0;
+      width: 200px;
+      height: 200px;
+    }
+    canvas#confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
+  <canvas id="confettiCanvas"></canvas>
+
   <div class="wrap">
-    <h1>HisabKitab</h1>
-    <div class="sub">Hostel Expense Splitter &amp; UPI Settlement</div>
+    <div class="topbar">
+      <div class="brand">
+        <h1>HisabKitab ⚡</h1>
+        <p>Smart Hostel Expense Splitter, UPI Engine &amp; Fun Roommate Tracker</p>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="demo" onclick="loadHackathonDemo()">🚀 Load Hackathon Demo</button>
+        <button type="button" class="sec" style="margin-top:0" onclick="celebrateClear()">🎉 Celebrate</button>
+        <button type="button" class="sec" style="margin-top:0" onclick="clearBills()">🗑️ Reset Bills</button>
+      </div>
+    </div>
 
     <div class="grid">
+      <!-- LEFT COLUMN -->
       <div>
-        <div class="box">
-          <h2>1. Roommates &amp; UPI Profiles</h2>
+        <div class="card">
+          <h2>1. Roommates &amp; UPI <span class="pill" id="memberCountPill">4 Members</span></h2>
           <div class="row">
             <div>
               <label for="mName">Roommate Name</label>
-              <input id="mName" type="text" placeholder="e.g. Aarav" />
+              <input id="mName" type="text" placeholder="e.g. Renu" />
             </div>
             <div>
               <label for="mUpi">UPI ID</label>
-              <input id="mUpi" type="text" placeholder="e.g. aarav.hostel@okicici" />
+              <input id="mUpi" type="text" placeholder="e.g. renu@okaxis" />
             </div>
           </div>
-          <button type="button" onclick="addMember()">+ Add</button>
-          <button type="button" class="sec" onclick="resetRoommates()">Default Members</button>
+          <button type="button" onclick="addMember()">+ Add Roommate</button>
+          <button type="button" class="sec" onclick="resetRoommates()">Default Squad</button>
           <div id="membersOut"></div>
         </div>
 
-        <div class="box">
-          <h2>2. Log Group Expense</h2>
-          <label for="eTitle">Expense Title</label>
-          <input id="eTitle" type="text" placeholder="Zomato / Electricity Bill" />
+        <div class="card">
+          <h2>2. Log Group Expense <span class="pill" id="totalOut">Total: ₹0</span></h2>
+          <div class="row">
+            <div>
+              <label for="eTitle">Expense Title</label>
+              <input id="eTitle" type="text" placeholder="e.g. Domino's Night Party" />
+            </div>
+            <div>
+              <label for="eCat">Category</label>
+              <select id="eCat">
+                <option value="🍕 Food & Chai">🍕 Food &amp; Chai</option>
+                <option value="⚡ Bijli & WiFi">⚡ Bijli &amp; WiFi</option>
+                <option value="🛒 Hostel Ration">🛒 Hostel Ration</option>
+                <option value="🎬 Outing & Fun">🎬 Outing &amp; Fun</option>
+              </select>
+            </div>
+          </div>
 
           <div class="row">
             <div>
               <label for="eAmt">Total Bill Amount (₹)</label>
-              <input id="eAmt" type="number" min="1" step="0.01" placeholder="12000" />
+              <input id="eAmt" type="number" min="1" step="0.01" placeholder="1200" />
             </div>
             <div>
               <label for="ePaidBy">Paid By</label>
@@ -72,39 +356,71 @@
             </div>
           </div>
 
-          <label>Split Equally Among</label>
-          <div id="splitChecks" class="checks"></div>
+          <label for="splitMode">Split Strategy</label>
+          <select id="splitMode" onchange="toggleSplitMode()">
+            <option value="equal">Equal Split (Sabme Barabar)</option>
+            <option value="custom">Custom Split (Alag-Alag Amount)</option>
+          </select>
+
+          <div id="equalBox">
+            <label>Select Roommates</label>
+            <div id="splitChecks" class="checks"></div>
+          </div>
+
+          <div id="customBox" style="display:none;">
+            <label>Enter Individual Share (₹)</label>
+            <div id="customInputs" class="custom-grid"></div>
+          </div>
 
           <button type="button" onclick="addExpense()">Save Expense &amp; Optimize Debts</button>
-          <button type="button" class="sec" onclick="clearBills()">Clear Bills</button>
-
-          <div class="tot">
-            <span>Total</span>
-            <span id="totalOut">₹0.00</span>
-          </div>
           <div id="billsOut"></div>
         </div>
       </div>
 
+      <!-- RIGHT COLUMN -->
       <div>
-        <div class="box">
-          <h2>Minimum-Transactions</h2>
-          <div class="muted">kam se kam UPI transfers mein hisab clear</div>
+        <div class="card">
+          <h2>3. Minimum-Transactions <span class="pill" id="txnCountPill">0 Transfers</span></h2>
+          <div class="muted">Greedy algorithm se kam se kam UPI transfers</div>
           <div id="settleOut"></div>
         </div>
 
-        <div class="box">
-          <h2>Net Member Standings</h2>
+        <div class="card">
+          <h2>4. Hostel Leaderboard &amp; Standings <span class="pill">Live Badges</span></h2>
           <div id="standingsOut"></div>
+        </div>
+
+        <div class="card">
+          <h2>5. Category Spend Breakdown <span class="pill">Analytics</span></h2>
+          <div id="chartOut"></div>
+        </div>
+
+        <div class="card">
+          <h2>6. 🎡 Bill Roulette ("Aaj Ka Bakra") <span class="pill">Fun Mode</span></h2>
+          <div class="wheel-box">
+            <div class="muted">Confused ki chai ya Zomato ka bill kaun dega? Wheel ghumao!</div>
+            <div id="wheelResult" class="wheel-result">Click Spin to decide!</div>
+            <button type="button" class="fun" onclick="spinBakraWheel()">🎲 Spin the Wheel</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- QR MODAL -->
+  <div id="qrModal" class="modal-bg" onclick="closeQrModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <h3 style="margin:0 0 4px 0;" id="qrTitle">Scan &amp; Pay</h3>
+      <div class="muted" id="qrSub">UPI ID</div>
+      <img id="qrImg" src="" alt="UPI QR" />
+      <div style="font-weight:bold; color:#34d399; font-size:18px;" id="qrAmt">₹0</div>
+      <button type="button" class="sec" style="width:100%;" onclick="closeQrModal()">Close</button>
+    </div>
+  </div>
+
   <script>
-    // localStorage keys
-    const KEY_M = "hisab_members_v1";
-    const KEY_B = "hisab_bills_v1";
+    const KEY_M = "hk_fun_members_v1";
+    const KEY_B = "hk_fun_bills_v1";
 
     const defaultMembers = [
       { id: "1", name: "Aarav", upi: "aarav.hostel@okicici" },
@@ -113,15 +429,15 @@
       { id: "4", name: "Dev", upi: "devansh@paytm" }
     ];
 
-    let members = loadArr(KEY_M, defaultMembers);
-    let bills = loadArr(KEY_B, []);
+    let members = loadStorage(KEY_M, defaultMembers);
+    let bills = loadStorage(KEY_B, []);
 
-    function loadArr(key, fallback) {
+    function loadStorage(key, fallback) {
       try {
         const raw = localStorage.getItem(key);
-        const parsed = raw ? JSON.parse(raw) : fallback;
-        return Array.isArray(parsed) ? parsed : fallback.slice();
-      } catch (err) {
+        const data = raw ? JSON.parse(raw) : fallback;
+        return Array.isArray(data) ? data : fallback.slice();
+      } catch (e) {
         return fallback.slice();
       }
     }
@@ -137,6 +453,43 @@
       render();
     }
 
+    function loadHackathonDemo() {
+      members = [
+        { id: "1", name: "Aarav", upi: "aarav.hostel@okicici" },
+        { id: "2", name: "Rohan", upi: "rohan99@ybl" },
+        { id: "3", name: "Kabir", upi: "kabir.dev@okaxis" },
+        { id: "4", name: "Dev", upi: "devansh@paytm" }
+      ];
+      bills = [
+        {
+          id: "b1",
+          title: "Room Rent & WiFi",
+          category: "⚡ Bijli & WiFi",
+          amount: 12000,
+          paidBy: "4",
+          shares: { "1": 3000, "2": 3000, "3": 3000, "4": 3000 }
+        },
+        {
+          id: "b2",
+          title: "Late Night Zomato Biryani",
+          category: "🍕 Food & Chai",
+          amount: 1600,
+          paidBy: "1",
+          shares: { "1": 400, "2": 400, "3": 400, "4": 400 }
+        },
+        {
+          id: "b3",
+          title: "Weekend Movie & Snacks",
+          category: "🎬 Outing & Fun",
+          amount: 2000,
+          paidBy: "2",
+          shares: { "1": 500, "2": 500, "3": 500, "4": 500 }
+        }
+      ];
+      saveAll();
+      render();
+    }
+
     function addMember() {
       const nameEl = document.getElementById("mName");
       const upiEl = document.getElementById("mUpi");
@@ -145,44 +498,74 @@
       if (!name) return;
 
       members.push({
-        id: String(Date.now()) + "_" + Math.floor(Math.random() * 99),
+        id: "m_" + Date.now() + "_" + Math.floor(Math.random() * 100),
         name: name,
         upi: upi
       });
-
       nameEl.value = "";
       upiEl.value = "";
       saveAll();
       render();
     }
 
-    function getSelectedIds() {
-      const els = document.querySelectorAll('input[name="splitUser"]:checked');
-      const arr = [];
-      for (let i = 0; i < els.length; i++) {
-        arr.push(els[i].value);
-      }
-      return arr;
+    function toggleSplitMode() {
+      const mode = document.getElementById("splitMode").value;
+      document.getElementById("equalBox").style.display = mode === "equal" ? "block" : "none";
+      document.getElementById("customBox").style.display = mode === "custom" ? "block" : "none";
     }
 
     function addExpense() {
       const titleEl = document.getElementById("eTitle");
+      const catEl = document.getElementById("eCat");
       const amtEl = document.getElementById("eAmt");
       const paidEl = document.getElementById("ePaidBy");
+      const mode = document.getElementById("splitMode").value;
 
       const title = titleEl.value.trim();
-      const amt = Number(amtEl.value);
+      const category = catEl.value;
+      const total = Number(amtEl.value);
       const paidBy = paidEl.value;
-      const users = getSelectedIds();
 
-      if (!title || !amt || amt <= 0 || !paidBy || users.length === 0) return;
+      if (!title || !total || total <= 0 || !paidBy) {
+        alert("Title aur sahi amount daalo!");
+        return;
+      }
+
+      const shares = {};
+
+      if (mode === "equal") {
+        const checked = document.querySelectorAll('input[name="splitUser"]:checked');
+        if (checked.length === 0) {
+          alert("Kam se kam ek roommate select karo!");
+          return;
+        }
+        const each = total / checked.length;
+        for (let i = 0; i < checked.length; i++) {
+          shares[checked[i].value] = each;
+        }
+      } else {
+        const inputs = document.querySelectorAll('input[data-custom-id]');
+        let sum = 0;
+        for (let i = 0; i < inputs.length; i++) {
+          const val = Number(inputs[i].value) || 0;
+          if (val > 0) {
+            shares[inputs[i].getAttribute("data-custom-id")] = val;
+            sum += val;
+          }
+        }
+        if (Math.abs(sum - total) > 1) {
+          alert("Custom split ka total (₹" + sum + ") bill amount (₹" + total + ") ke barabar hona chahiye!");
+          return;
+        }
+      }
 
       bills.push({
-        id: String(Date.now()),
+        id: "b_" + Date.now(),
         title: title,
-        amount: amt,
+        category: category,
+        amount: total,
         paidBy: paidBy,
-        users: users
+        shares: shares
       });
 
       titleEl.value = "";
@@ -210,7 +593,6 @@
       return null;
     }
 
-    // + matlab lene hain, - matlab dene hain
     function calcNet() {
       const net = {};
       for (let i = 0; i < members.length; i++) {
@@ -219,15 +601,13 @@
 
       for (let i = 0; i < bills.length; i++) {
         const b = bills[i];
-        const valid = b.users.filter(function (id) { return net[id] !== undefined; });
-        if (valid.length === 0) continue;
-
-        const each = b.amount / valid.length;
         if (net[b.paidBy] !== undefined) {
           net[b.paidBy] += b.amount;
         }
-        for (let j = 0; j < valid.length; j++) {
-          net[valid[j]] -= each;
+        for (const uid in b.shares) {
+          if (net[uid] !== undefined) {
+            net[uid] -= b.shares[uid];
+          }
         }
       }
       return net;
@@ -248,14 +628,14 @@
         }
       }
 
-      const list = [];
+      const txns = [];
       let d = 0;
       let c = 0;
 
       while (d < debtors.length && c < creditors.length) {
         const pay = Math.round(Math.min(debtors[d].amt, creditors[c].amt) * 100) / 100;
         if (pay > 0) {
-          list.push({
+          txns.push({
             from: debtors[d].name,
             to: creditors[c].name,
             upi: creditors[c].upi,
@@ -268,38 +648,74 @@
         if (creditors[c].amt <= 0.01) c++;
       }
 
-      return list;
+      return txns;
     }
 
-    function upiLink(upi, name, amt) {
+    function buildUpiUrl(upi, name, amt) {
       if (!upi) return "#";
       const q = new URLSearchParams({
         pa: upi,
         pn: name,
         am: String(amt),
         cu: "INR",
-        tn: "HisabKitab"
+        tn: "HisabKitab Settlement"
       });
       return "upi://pay?" + q.toString();
     }
 
+    function openQrModal(toName, upi, amt) {
+      const upiUrl = buildUpiUrl(upi, toName, amt);
+      document.getElementById("qrTitle").textContent = "Pay " + toName;
+      document.getElementById("qrSub").textContent = upi;
+      document.getElementById("qrAmt").textContent = "₹" + amt.toFixed(2);
+      document.getElementById("qrImg").src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(upiUrl);
+      document.getElementById("qrModal").style.display = "flex";
+    }
+
+    function closeQrModal() {
+      document.getElementById("qrModal").style.display = "none";
+    }
+
+    function spinBakraWheel() {
+      if (members.length === 0) return;
+      const resEl = document.getElementById("wheelResult");
+      let ticks = 0;
+      const timer = setInterval(function () {
+        const rand = members[Math.floor(Math.random() * members.length)];
+        resEl.textContent = "Spinning... " + rand.name;
+        ticks++;
+        if (ticks > 16) {
+          clearInterval(timer);
+          const winner = members[Math.floor(Math.random() * members.length)];
+          resEl.textContent = "🎉 Aaj ka bill " + winner.name + " bharega!";
+        }
+      }, 70);
+    }
+
     function render() {
+      document.getElementById("memberCountPill").textContent = members.length + " Members";
+
       const membersOut = document.getElementById("membersOut");
       const paidEl = document.getElementById("ePaidBy");
       const splitChecks = document.getElementById("splitChecks");
+      const customInputs = document.getElementById("customInputs");
       const prevPaid = paidEl.value;
 
       membersOut.innerHTML = "";
       paidEl.innerHTML = "";
       splitChecks.innerHTML = "";
+      customInputs.innerHTML = "";
 
       for (let i = 0; i < members.length; i++) {
         const m = members[i];
 
-        const div = document.createElement("div");
-        div.className = "list-item";
-        div.innerHTML = "<div><strong>" + m.name + "</strong><div class='muted'>" + (m.upi || "-") + "</div></div><span class='muted'>" + (i + 1) + "</span>";
-        membersOut.appendChild(div);
+        const row = document.createElement("div");
+        row.className = "item";
+        row.innerHTML =
+          "<div><strong>" + m.name + "</strong><div class='muted'>" + (m.upi || "No UPI") + "</div></div>" +
+          "<span class='pill'>Roomie #" + (i + 1) + "</span>";
+        membersOut.appendChild(row);
 
         const opt = document.createElement("option");
         opt.value = m.id;
@@ -309,74 +725,176 @@
         const lbl = document.createElement("label");
         lbl.innerHTML = "<input type='checkbox' name='splitUser' value='" + m.id + "' checked /> " + m.name;
         splitChecks.appendChild(lbl);
+
+        const cDiv = document.createElement("div");
+        cDiv.className = "custom-row";
+        cDiv.innerHTML =
+          "<span>" + m.name + "</span>" +
+          "<input type='number' min='0' step='0.01' placeholder='0' data-custom-id='" + m.id + "' />";
+        customInputs.appendChild(cDiv);
       }
 
       if (prevPaid && findMember(prevPaid)) {
         paidEl.value = prevPaid;
       }
 
+      // Bills & Category totals
       const billsOut = document.getElementById("billsOut");
-      const totalOut = document.getElementById("totalOut");
       billsOut.innerHTML = "";
-      let sum = 0;
+      let totalSum = 0;
+      const catTotals = {};
 
       for (let i = 0; i < bills.length; i++) {
         const b = bills[i];
-        sum += b.amount;
+        totalSum += b.amount;
+        catTotals[b.category] = (catTotals[b.category] || 0) + b.amount;
+
         const payer = findMember(b.paidBy);
-
-        const row = document.createElement("div");
-        row.className = "list-item";
-        row.innerHTML =
-          "<div><strong>" + b.title + "</strong> — ₹" + b.amount.toFixed(2) +
-          "<div class='muted'>Paid by " + (payer ? payer.name : "?") + "</div></div>" +
-          "<button type='button' class='del' onclick=\"removeBill('" + b.id + "')\">Delete</button>";
-        billsOut.appendChild(row);
+        const item = document.createElement("div");
+        item.className = "item";
+        item.innerHTML =
+          "<div>" +
+          "<strong>" + b.title + "</strong> <span class='badge'>" + b.category + "</span>" +
+          "<div class='muted'>₹" + b.amount.toFixed(2) + " • Paid by " + (payer ? payer.name : "?") + "</div>" +
+          "</div>" +
+          "<button type='button' class='danger' onclick=\"removeBill('" + b.id + "')\">Delete</button>";
+        billsOut.appendChild(item);
       }
-      totalOut.textContent = "₹" + sum.toFixed(2);
+      document.getElementById("totalOut").textContent = "Total: ₹" + totalSum.toFixed(2);
 
+      // Settlements
       const settleOut = document.getElementById("settleOut");
       const txns = calcSettlements();
+      document.getElementById("txnCountPill").textContent = txns.length + " Transfers";
       settleOut.innerHTML = "";
 
       if (txns.length === 0) {
-        settleOut.innerHTML = "<div class='muted' style='margin-top:10px;'>Koi pending hisab nahi hai.</div>";
+        settleOut.innerHTML = "<div class='item'><span class='plus'>✅ Sabka hisab bilkul clear hai!</span></div>";
       } else {
         for (let i = 0; i < txns.length; i++) {
           const t = txns[i];
-          const item = document.createElement("div");
-          item.className = "list-item";
-          item.innerHTML =
-            "<div><strong>" + t.from + "</strong> → <strong>" + t.to + "</strong>" +
+          const waMsg = encodeURIComponent(
+            "Bhai " + t.from + ", HisabKitab ke hisaab se " + t.to + " ko ₹" + t.amount.toFixed(2) +
+            " bhejne hain (UPI: " + (t.upi || "cash") + "). Jaldi clear kar de warna chai band! ☕"
+          );
+
+          const sItem = document.createElement("div");
+          sItem.className = "item";
+          sItem.innerHTML =
+            "<div>" +
+            "<div><strong>" + t.from + "</strong> ➡️ <strong>" + t.to + "</strong></div>" +
             "<div class='muted'>UPI: " + (t.upi || "Not added") + "</div>" +
-            (t.upi ? "<a class='upi-btn' href='" + upiLink(t.upi, t.to, t.amount) + "'>Pay via UPI</a>" : "") +
-            "</div><div class='plus'>₹" + t.amount.toFixed(2) + "</div>";
-          settleOut.appendChild(item);
+            "<div class='action-links'>" +
+            (t.upi ? "<a class='mini-btn upi-go' href='" + buildUpiUrl(t.upi, t.to, t.amount) + "'>Pay UPI</a>" : "") +
+            (t.upi ? "<button type='button' class='mini-btn qr-go' onclick=\"openQrModal('" + t.to + "','" + t.upi + "'," + t.amount + ")\">QR Code</button>" : "") +
+            "<a class='mini-btn wa-go' target='_blank' href='https://wa.me/?text=" + waMsg + "'>WhatsApp Remind</a>" +
+            "</div>" +
+            "</div>" +
+            "<div class='plus' style='font-size:16px;'>₹" + t.amount.toFixed(2) + "</div>";
+          settleOut.appendChild(sItem);
         }
       }
 
+      // Standings + Fun Badges
       const standingsOut = document.getElementById("standingsOut");
       const net = calcNet();
       standingsOut.innerHTML = "";
 
+      let maxGet = 0;
+      let maxOwe = 0;
+      for (let i = 0; i < members.length; i++) {
+        const v = net[members[i].id] || 0;
+        if (v > maxGet) maxGet = v;
+        if (v < maxOwe) maxOwe = v;
+      }
+
       for (let i = 0; i < members.length; i++) {
         const m = members[i];
         const v = Math.round((net[m.id] || 0) * 100) / 100;
+
+        let badge = "";
+        if (v > 0.01 && v === Math.round(maxGet * 100) / 100) {
+          badge = "<span class='badge'>💸 Hostel Ambani</span>";
+        } else if (v < -0.01 && v === Math.round(maxOwe * 100) / 100) {
+          badge = "<span class='badge'>😅 Udhaar King</span>";
+        } else if (Math.abs(v) <= 0.01 && bills.length > 0) {
+          badge = "<span class='badge'>✅ Tension Free</span>";
+        }
+
         let cls = "muted";
         let txt = "₹0.00";
         if (v > 0.01) {
           cls = "plus";
-          txt = "+₹" + v.toFixed(2);
+          txt = "+₹" + v.toFixed(2) + " (Gets)";
         } else if (v < -0.01) {
           cls = "minus";
-          txt = "-₹" + Math.abs(v).toFixed(2);
+          txt = "-₹" + Math.abs(v).toFixed(2) + " (Owes)";
         }
 
-        const sRow = document.createElement("div");
-        sRow.className = "list-item";
-        sRow.innerHTML = "<strong>" + m.name + "</strong><span class='" + cls + "'>" + txt + "</span>";
-        standingsOut.appendChild(sRow);
+        const st = document.createElement("div");
+        st.className = "item";
+        st.innerHTML = "<div><strong>" + m.name + "</strong>" + badge + "</div><div class='" + cls + "'>" + txt + "</div>";
+        standingsOut.appendChild(st);
       }
+
+      // Category Chart
+      const chartOut = document.getElementById("chartOut");
+      chartOut.innerHTML = "";
+      const cats = Object.keys(catTotals);
+      if (cats.length === 0) {
+        chartOut.innerHTML = "<div class='muted'>Expense add karte hi category graph dikhega.</div>";
+      } else {
+        for (let i = 0; i < cats.length; i++) {
+          const cName = cats[i];
+          const cVal = catTotals[cName];
+          const pct = totalSum > 0 ? Math.round((cVal / totalSum) * 100) : 0;
+
+          const wrap = document.createElement("div");
+          wrap.className = "bar-wrap";
+          wrap.innerHTML =
+            "<div class='bar-label'><span>" + cName + "</span><span>₹" + cVal.toFixed(0) + " (" + pct + "%)</span></div>" +
+            "<div class='bar-track'><div class='bar-fill' style='width:" + pct + "%'></div></div>";
+          chartOut.appendChild(wrap);
+        }
+      }
+    }
+
+    // Simple Confetti Effect
+    function celebrateClear() {
+      const canvas = document.getElementById("confettiCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ["#34d399", "#38bdf8", "#fbbf24", "#f472b6", "#a78bfa"];
+      for (let i = 0; i < 90; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 6 + 4,
+          c: colors[Math.floor(Math.random() * colors.length)],
+          s: Math.random() * 3 + 2
+        });
+      }
+
+      let frames = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < pieces.length; i++) {
+          const p = pieces[i];
+          ctx.fillStyle = p.c;
+          ctx.fillRect(p.x, p.y, p.r, p.r);
+          p.y += p.s;
+        }
+        frames++;
+        if (frames < 120) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      draw();
     }
 
     render();
