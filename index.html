@@ -21,4 +21,365 @@
     button { margin-top: 12px; padding: 9px 14px; border: none; border-radius: 6px; background: #10b981; color: #052e16; font-weight: bold; cursor: pointer; }
     button.sec { background: #334155; color: #f8fafc; }
     button.del { background: #dc2626; color: #fff; padding: 5px 9px; font-size: 12px; margin-top: 0; }
-    .list-item { background: #0f172a; border: 1px solid #334155; border-radius: 7px; padding: 10px 12px; margin-top: 8
+    .list-item { background: #0f172a; border: 1px solid #334155; border-radius: 7px; padding: 10px 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .muted { font-size: 12px; color: #94a3b8; }
+    .plus { color: #34d399; font-weight: bold; }
+    .minus { color: #f87171; font-weight: bold; }
+    .checks { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 12px; }
+    .checks label { display: inline-flex; align-items: center; gap: 5px; margin: 0; cursor: pointer; }
+    .checks input { width: auto; }
+    .upi-btn { display: inline-block; margin-top: 6px; padding: 5px 10px; background: #059669; color: #fff; text-decoration: none; border-radius: 5px; font-size: 12px; }
+    .tot { margin-top: 12px; padding-top: 10px; border-top: 1px solid #334155; display: flex; justify-content: space-between; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>HisabKitab</h1>
+    <div class="sub">Hostel Expense Splitter &amp; UPI Settlement</div>
+
+    <div class="grid">
+      <div>
+        <div class="box">
+          <h2>1. Roommates &amp; UPI Profiles</h2>
+          <div class="row">
+            <div>
+              <label for="mName">Roommate Name</label>
+              <input id="mName" type="text" placeholder="e.g. Aarav" />
+            </div>
+            <div>
+              <label for="mUpi">UPI ID</label>
+              <input id="mUpi" type="text" placeholder="e.g. aarav.hostel@okicici" />
+            </div>
+          </div>
+          <button type="button" onclick="addMember()">+ Add</button>
+          <button type="button" class="sec" onclick="resetRoommates()">Default Members</button>
+          <div id="membersOut"></div>
+        </div>
+
+        <div class="box">
+          <h2>2. Log Group Expense</h2>
+          <label for="eTitle">Expense Title</label>
+          <input id="eTitle" type="text" placeholder="Zomato / Electricity Bill" />
+
+          <div class="row">
+            <div>
+              <label for="eAmt">Total Bill Amount (₹)</label>
+              <input id="eAmt" type="number" min="1" step="0.01" placeholder="12000" />
+            </div>
+            <div>
+              <label for="ePaidBy">Paid By</label>
+              <select id="ePaidBy"></select>
+            </div>
+          </div>
+
+          <label>Split Equally Among</label>
+          <div id="splitChecks" class="checks"></div>
+
+          <button type="button" onclick="addExpense()">Save Expense &amp; Optimize Debts</button>
+          <button type="button" class="sec" onclick="clearBills()">Clear Bills</button>
+
+          <div class="tot">
+            <span>Total</span>
+            <span id="totalOut">₹0.00</span>
+          </div>
+          <div id="billsOut"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="box">
+          <h2>Minimum-Transactions</h2>
+          <div class="muted">kam se kam UPI transfers mein hisab clear</div>
+          <div id="settleOut"></div>
+        </div>
+
+        <div class="box">
+          <h2>Net Member Standings</h2>
+          <div id="standingsOut"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // localStorage keys
+    const KEY_M = "hisab_members_v1";
+    const KEY_B = "hisab_bills_v1";
+
+    const defaultMembers = [
+      { id: "1", name: "Aarav", upi: "aarav.hostel@okicici" },
+      { id: "2", name: "Rohan", upi: "rohan99@ybl" },
+      { id: "3", name: "Kabir", upi: "kabir.dev@okaxis" },
+      { id: "4", name: "Dev", upi: "devansh@paytm" }
+    ];
+
+    let members = loadArr(KEY_M, defaultMembers);
+    let bills = loadArr(KEY_B, []);
+
+    function loadArr(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        const parsed = raw ? JSON.parse(raw) : fallback;
+        return Array.isArray(parsed) ? parsed : fallback.slice();
+      } catch (err) {
+        return fallback.slice();
+      }
+    }
+
+    function saveAll() {
+      localStorage.setItem(KEY_M, JSON.stringify(members));
+      localStorage.setItem(KEY_B, JSON.stringify(bills));
+    }
+
+    function resetRoommates() {
+      members = defaultMembers.slice();
+      saveAll();
+      render();
+    }
+
+    function addMember() {
+      const nameEl = document.getElementById("mName");
+      const upiEl = document.getElementById("mUpi");
+      const name = nameEl.value.trim();
+      const upi = upiEl.value.trim();
+      if (!name) return;
+
+      members.push({
+        id: String(Date.now()) + "_" + Math.floor(Math.random() * 99),
+        name: name,
+        upi: upi
+      });
+
+      nameEl.value = "";
+      upiEl.value = "";
+      saveAll();
+      render();
+    }
+
+    function getSelectedIds() {
+      const els = document.querySelectorAll('input[name="splitUser"]:checked');
+      const arr = [];
+      for (let i = 0; i < els.length; i++) {
+        arr.push(els[i].value);
+      }
+      return arr;
+    }
+
+    function addExpense() {
+      const titleEl = document.getElementById("eTitle");
+      const amtEl = document.getElementById("eAmt");
+      const paidEl = document.getElementById("ePaidBy");
+
+      const title = titleEl.value.trim();
+      const amt = Number(amtEl.value);
+      const paidBy = paidEl.value;
+      const users = getSelectedIds();
+
+      if (!title || !amt || amt <= 0 || !paidBy || users.length === 0) return;
+
+      bills.push({
+        id: String(Date.now()),
+        title: title,
+        amount: amt,
+        paidBy: paidBy,
+        users: users
+      });
+
+      titleEl.value = "";
+      amtEl.value = "";
+      saveAll();
+      render();
+    }
+
+    function removeBill(id) {
+      bills = bills.filter(function (b) { return b.id !== id; });
+      saveAll();
+      render();
+    }
+
+    function clearBills() {
+      bills = [];
+      saveAll();
+      render();
+    }
+
+    function findMember(id) {
+      for (let i = 0; i < members.length; i++) {
+        if (members[i].id === id) return members[i];
+      }
+      return null;
+    }
+
+    // + matlab lene hain, - matlab dene hain
+    function calcNet() {
+      const net = {};
+      for (let i = 0; i < members.length; i++) {
+        net[members[i].id] = 0;
+      }
+
+      for (let i = 0; i < bills.length; i++) {
+        const b = bills[i];
+        const valid = b.users.filter(function (id) { return net[id] !== undefined; });
+        if (valid.length === 0) continue;
+
+        const each = b.amount / valid.length;
+        if (net[b.paidBy] !== undefined) {
+          net[b.paidBy] += b.amount;
+        }
+        for (let j = 0; j < valid.length; j++) {
+          net[valid[j]] -= each;
+        }
+      }
+      return net;
+    }
+
+    function calcSettlements() {
+      const net = calcNet();
+      const debtors = [];
+      const creditors = [];
+
+      for (let i = 0; i < members.length; i++) {
+        const m = members[i];
+        const val = Math.round((net[m.id] || 0) * 100) / 100;
+        if (val < -0.01) {
+          debtors.push({ name: m.name, upi: m.upi, amt: Math.abs(val) });
+        } else if (val > 0.01) {
+          creditors.push({ name: m.name, upi: m.upi, amt: val });
+        }
+      }
+
+      const list = [];
+      let d = 0;
+      let c = 0;
+
+      while (d < debtors.length && c < creditors.length) {
+        const pay = Math.round(Math.min(debtors[d].amt, creditors[c].amt) * 100) / 100;
+        if (pay > 0) {
+          list.push({
+            from: debtors[d].name,
+            to: creditors[c].name,
+            upi: creditors[c].upi,
+            amount: pay
+          });
+        }
+        debtors[d].amt = Math.round((debtors[d].amt - pay) * 100) / 100;
+        creditors[c].amt = Math.round((creditors[c].amt - pay) * 100) / 100;
+        if (debtors[d].amt <= 0.01) d++;
+        if (creditors[c].amt <= 0.01) c++;
+      }
+
+      return list;
+    }
+
+    function upiLink(upi, name, amt) {
+      if (!upi) return "#";
+      const q = new URLSearchParams({
+        pa: upi,
+        pn: name,
+        am: String(amt),
+        cu: "INR",
+        tn: "HisabKitab"
+      });
+      return "upi://pay?" + q.toString();
+    }
+
+    function render() {
+      const membersOut = document.getElementById("membersOut");
+      const paidEl = document.getElementById("ePaidBy");
+      const splitChecks = document.getElementById("splitChecks");
+      const prevPaid = paidEl.value;
+
+      membersOut.innerHTML = "";
+      paidEl.innerHTML = "";
+      splitChecks.innerHTML = "";
+
+      for (let i = 0; i < members.length; i++) {
+        const m = members[i];
+
+        const div = document.createElement("div");
+        div.className = "list-item";
+        div.innerHTML = "<div><strong>" + m.name + "</strong><div class='muted'>" + (m.upi || "-") + "</div></div><span class='muted'>" + (i + 1) + "</span>";
+        membersOut.appendChild(div);
+
+        const opt = document.createElement("option");
+        opt.value = m.id;
+        opt.textContent = m.name;
+        paidEl.appendChild(opt);
+
+        const lbl = document.createElement("label");
+        lbl.innerHTML = "<input type='checkbox' name='splitUser' value='" + m.id + "' checked /> " + m.name;
+        splitChecks.appendChild(lbl);
+      }
+
+      if (prevPaid && findMember(prevPaid)) {
+        paidEl.value = prevPaid;
+      }
+
+      const billsOut = document.getElementById("billsOut");
+      const totalOut = document.getElementById("totalOut");
+      billsOut.innerHTML = "";
+      let sum = 0;
+
+      for (let i = 0; i < bills.length; i++) {
+        const b = bills[i];
+        sum += b.amount;
+        const payer = findMember(b.paidBy);
+
+        const row = document.createElement("div");
+        row.className = "list-item";
+        row.innerHTML =
+          "<div><strong>" + b.title + "</strong> — ₹" + b.amount.toFixed(2) +
+          "<div class='muted'>Paid by " + (payer ? payer.name : "?") + "</div></div>" +
+          "<button type='button' class='del' onclick=\"removeBill('" + b.id + "')\">Delete</button>";
+        billsOut.appendChild(row);
+      }
+      totalOut.textContent = "₹" + sum.toFixed(2);
+
+      const settleOut = document.getElementById("settleOut");
+      const txns = calcSettlements();
+      settleOut.innerHTML = "";
+
+      if (txns.length === 0) {
+        settleOut.innerHTML = "<div class='muted' style='margin-top:10px;'>Koi pending hisab nahi hai.</div>";
+      } else {
+        for (let i = 0; i < txns.length; i++) {
+          const t = txns[i];
+          const item = document.createElement("div");
+          item.className = "list-item";
+          item.innerHTML =
+            "<div><strong>" + t.from + "</strong> → <strong>" + t.to + "</strong>" +
+            "<div class='muted'>UPI: " + (t.upi || "Not added") + "</div>" +
+            (t.upi ? "<a class='upi-btn' href='" + upiLink(t.upi, t.to, t.amount) + "'>Pay via UPI</a>" : "") +
+            "</div><div class='plus'>₹" + t.amount.toFixed(2) + "</div>";
+          settleOut.appendChild(item);
+        }
+      }
+
+      const standingsOut = document.getElementById("standingsOut");
+      const net = calcNet();
+      standingsOut.innerHTML = "";
+
+      for (let i = 0; i < members.length; i++) {
+        const m = members[i];
+        const v = Math.round((net[m.id] || 0) * 100) / 100;
+        let cls = "muted";
+        let txt = "₹0.00";
+        if (v > 0.01) {
+          cls = "plus";
+          txt = "+₹" + v.toFixed(2);
+        } else if (v < -0.01) {
+          cls = "minus";
+          txt = "-₹" + Math.abs(v).toFixed(2);
+        }
+
+        const sRow = document.createElement("div");
+        sRow.className = "list-item";
+        sRow.innerHTML = "<strong>" + m.name + "</strong><span class='" + cls + "'>" + txt + "</span>";
+        standingsOut.appendChild(sRow);
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
